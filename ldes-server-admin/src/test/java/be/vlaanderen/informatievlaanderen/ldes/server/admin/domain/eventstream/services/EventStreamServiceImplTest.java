@@ -67,6 +67,8 @@ class EventStreamServiceImplTest {
     private DcatServerService dcatServerService;
     @Mock
     private EventSourceService eventSourceService;
+    @Captor
+    ArgumentCaptor<EventStream> streamCaptor;
 
     private EventStreamService service;
 
@@ -296,7 +298,9 @@ class EventStreamServiceImplTest {
         service.closeEventStream(COLLECTION);
 
         verify(eventStreamRepository).retrieveEventStream(COLLECTION);
+        verify(eventStreamRepository).saveEventStream(streamCaptor.capture());
         verify(eventPublisher).publishEvent(new EventStreamClosedEvent(COLLECTION));
+        assertThat(streamCaptor.getValue()).matches(EventStream::isClosed);
     }
 
     @Test

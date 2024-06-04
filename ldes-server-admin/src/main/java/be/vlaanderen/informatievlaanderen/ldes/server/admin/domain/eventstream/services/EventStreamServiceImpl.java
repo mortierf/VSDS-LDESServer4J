@@ -96,6 +96,8 @@ public class EventStreamServiceImpl implements EventStreamService {
 	@Override
 	public void closeEventStream(String collectionName) {
 		EventStream eventStream = getEventStream(collectionName);
+		eventStream.close();
+		eventStreamRepository.saveEventStream(eventStream);
 		eventPublisher.publishEvent(new EventStreamClosedEvent(eventStream.getCollection()));
 	}
 
